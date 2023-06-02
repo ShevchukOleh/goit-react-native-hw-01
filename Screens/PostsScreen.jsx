@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-export default function RegistrationScreen() {
+export default function PostsScreen() {
 
     return (
       <View></View>

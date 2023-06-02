@@ -1,4 +1,4 @@
-import { ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, Image } from 'react-native';
+import { Dimensions,ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, Image } from 'react-native';
 import background from '../assets/images/iosBackground.png';
 import addImage from '../assets/images/add.png';
 
@@ -20,6 +20,9 @@ export default function RegistrationScreen() {
                         <TextInput style={styles.input} placeholder='Логін'></TextInput>
                         <TextInput style={styles.input} placeholder='Адреса електронної пошти'></TextInput>
                         <TextInput style={styles.inputLast} placeholder='Пароль'></TextInput>
+                        <TouchableOpacity style={styles.password} >
+                            <Text style={styles.checkPassword}>Показати</Text>
+                        </TouchableOpacity>
                         <TouchableOpacity style={styles.button} >
                             <Text style={styles.buttonText}>Зареєструватися</Text>
                         </TouchableOpacity>
@@ -33,8 +36,15 @@ export default function RegistrationScreen() {
     </View>
   );
 }
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
+//   safeArea: {
+//     flex: 1,
+//     paddingTop: Platform.OS === 'ios' ? windowWidth * 0.05 : 0,
+//     paddingBottom: Platform.OS === 'ios' ? windowWidth * 0.05 : 0,
+//   },
   container: {
     flex: 1,
     alignItems: 'flex-end',
@@ -50,19 +60,19 @@ const styles = StyleSheet.create({
   userImagePosition: {
     justifyContent: 'center',
     alignItems: 'center',
-    top: -90,
-  },
+    top: -windowWidth * 0.25,
+  },  
   userImage: {
-    position: "absolute",
+    position: 'absolute',
     backgroundColor: '#F6F6F6',
     width: 120,
     height: 120,
-    borderRadius: 16,
+    borderRadius: windowWidth * 0.05,
   },
   addImage: {
     position: 'absolute',
-    top: 15,
-    left: 227,
+    top: windowWidth * 0.04,
+    left: windowWidth * 0.58,
   },
   title: {
     fontFamily: 'Roboto-Medium',
@@ -84,11 +94,11 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     position: 'absolute',
-    top: '31%',
+    top: '30%',
     borderTopLeftRadius: 25,
     borderTopRightRadius: 25,
     backgroundColor: '#fff',
-},
+  },
   input: {
     height: 50,
     marginBottom: 16,
@@ -141,6 +151,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     textAlign: 'center',
+    color: '#1B4371',
+  },
+  password: {
+    position: 'absolute',
+    top: 148,
+    right: windowWidth * 0.05,
+  },
+  checkPassword: {
+    fontFamily: 'Roboto-Regular',
+    fontSize: 16,
+    lineHeight: 19,
     color: '#1B4371',
   },
 });

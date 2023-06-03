@@ -1,4 +1,4 @@
-import { Dimensions,ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Dimensions,ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, Image, TouchableWithoutFeedback, Keyboard, Button } from 'react-native';
 import background from '../assets/images/iosBackground.png';
 import addImage from '../assets/images/add.png';
 import { useState } from 'react';
@@ -8,9 +8,57 @@ export default function RegistrationScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [watchPassword, setWatchPassword] = useState({ secureTextEntry: true, buttonText: 'Показати' });
+  const [validationName, setValidationName] = useState("");
+  const [validationEmail, setValidationEmail] = useState("");
+  const [validationPassword, setValidationPassword] = useState("");
+
+  const validateName = () => {
+    setValidationName("");
+    
+    if (name.trim() === "") {
+      setValidationName("Введіть своє ім'я.");
+      return false;
+    }
+
+    return true;
+  }
+
+  const validateEmail = () => {
+    setValidationEmail("");
+
+    if (email.trim() === "") {
+      setValidationEmail("Введіть адресу електронної пошти.");
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setValidationEmail("Введіть дійсну адресу електронної пошти.");
+      return false;
+    }
+
+    return true;
+  }
+
+  const validatePassword = () => {
+    setValidationPassword("");
+
+    if (password.trim() === "") {
+      setValidationPassword("Введіть свій пароль.");
+      return false;
+    }
+    if (password.length < 6) {
+      setValidationPassword("Пароль має бути не менше 6 символів.");
+      return false;
+    }
+
+    return true;
+  }
 
   const onLogin = () => {
-    console.log("Credentials", `name: ${name}; email: ${email}; password: ${password}`);
+    if (validateName() && validateEmail() && validatePassword()) {
+      console.log("Credentials", `name: ${name}; email: ${email}; password: ${password}`);
+    }
   };
 
   const seePassword = () => {
@@ -32,29 +80,38 @@ export default function RegistrationScreen() {
               </TouchableOpacity>
               <Text style={styles.title}>Реєстрація</Text>
               <SafeAreaView>
+                <Text style={styles.errorName}>{validationName}</Text>
                 <TextInput 
                   style={styles.input} 
                   placeholder='Логін'
                   value={name}
-                  onChangeText={setName}>
+                  onChangeText={setName}
+                  onBlur={validateName}
+                >
                 </TextInput>
+                <Text style={styles.errorEmail}>{validationEmail}</Text>
                 <TextInput 
                   style={styles.input} 
                   placeholder='Адреса електронної пошти'
                   value={email}
-                  onChangeText={setEmail}>
+                  onChangeText={setEmail}
+                  onBlur={validateEmail}
+                >
                 </TextInput>
+                <Text style={styles.errorPassword}>{validationPassword}</Text>
                 <TextInput 
                   style={styles.inputLast} 
                   placeholder='Пароль' 
                   value={password}
                   onChangeText={setPassword}
-                  secureTextEntry={watchPassword.secureTextEntry}>
+                  onBlur={validatePassword}
+                  secureTextEntry={watchPassword.secureTextEntry}
+                >
                 </TextInput>
                 <TouchableOpacity style={styles.password}>
                   <Text style={styles.checkPassword} onPress={seePassword}>{watchPassword.buttonText}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} >
+                <TouchableOpacity style={styles.button}>
                   <Text style={styles.buttonText} onPress={onLogin}>Зареєструватися</Text>
                 </TouchableOpacity>
               </SafeAreaView>
@@ -140,7 +197,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Regular',
     fontSize: 16,
     lineHeight: 19,
-    color: "#BDBDBD",
+    color: "#212121",
   },
   inputLast: {
     borderWidth: 1,
@@ -155,7 +212,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Regular',
     fontSize: 16,
     lineHeight: 19,
-    color: "#BDBDBD",
+    color: "#212121",
   },
   button: {
     color: "#FF6C00",
@@ -173,6 +230,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     textAlign: 'center',
+  },
+  disabledButton: {
+    color: "#FF6C00",
+    borderRadius: 100,
+    backgroundColor: 'grey',
+    paddingTop: 16,
+    paddingBottom: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 43,
   },
   logIn: {
     marginTop: 16,
@@ -192,5 +259,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: '#1B4371',
+  },
+  errorName: {
+    position: 'absolute',
+    color: 'red',
+    top: -20,
+  },
+  errorEmail: {
+    position: 'absolute',
+    color: 'red',
+    top: 49,
+  },
+  errorPassword: {
+    position: 'absolute',
+    color: 'red',
+    top: 115,
   },
 });

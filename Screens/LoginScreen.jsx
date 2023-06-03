@@ -5,11 +5,48 @@ import { useState } from 'react';
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [watchPassword, setWatchPassword] = useState({ secureTextEntry: true, buttonText: 'Показати' });
+  const [validationEmail, setValidationEmail] = useState("");
+  const [validationPassword, setValidationPassword] = useState("");
+
+  const validateEmail = () => {
+    setValidationEmail("");
+
+    if (email.trim() === "") {
+      setValidationEmail("Введіть адресу електронної пошти.");
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setValidationEmail("Введіть дійсну адресу електронної пошти.");
+      return false;
+    }
+
+    return true;
+  }
+
+  const validatePassword = () => {
+    setValidationPassword("");
+
+    if (password.trim() === "") {
+      setValidationPassword("Введіть свій пароль.");
+      return false;
+    }
+    if (password.length < 6) {
+      setValidationPassword("Пароль має бути не менше 6 символів.");
+      return false;
+    }
+
+    return true;
+  }
 
   const onLogin = () => {
-    console.log("Credentials", `email: ${email}; password: ${password}`);
+    if (validateEmail() && validatePassword()) {
+      console.log("Credentials", `email: ${email}; password: ${password}`);
+    }
   };
+
+  const [watchPassword, setWatchPassword] = useState({ secureTextEntry: true, buttonText: 'Показати' });
 
   const seePassword = () => {
     setWatchPassword((prevState) => ({ secureTextEntry: !prevState.secureTextEntry,
@@ -24,17 +61,21 @@ export default function LoginScreen() {
             <View style={styles.section}>
               <Text style={styles.title}>Увійти</Text>
               <SafeAreaView>
+                <Text style={styles.errorEmail}>{validationEmail}</Text>
                 <TextInput 
                   style={styles.input} 
                   placeholder='Адреса електронної пошти'
                   value={email}
-                  onChangeText={setEmail}>
+                  onChangeText={setEmail}
+                  onBlur={validateEmail}>
                 </TextInput>
+                <Text style={styles.errorPassword}>{validationPassword}</Text>
                 <TextInput 
                   style={styles.inputLast} 
                   placeholder='Пароль' 
                   value={password}
                   onChangeText={setPassword}
+                  onBlur={validatePassword}
                   secureTextEntry={watchPassword.secureTextEntry}>
                 </TextInput>
                 <TouchableOpacity style={styles.password} >
@@ -107,7 +148,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Regular',
     fontSize: 16,
     lineHeight: 19,
-    color: "#BDBDBD",
+    color: "#212121",
   },
   inputLast: {
     height: 50,
@@ -121,7 +162,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Roboto-Regular',
     fontSize: 16,
     lineHeight: 19,
-    color: "#BDBDBD",
+    color: "#212121",
   },
   button: {
     color: "#FF6C00",
@@ -158,5 +199,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 19,
     color: '#1B4371',
+  },
+  errorEmail: {
+    position: 'absolute',
+    color: 'red',
+    top: -20,
+  },
+  errorPassword: {
+    position: 'absolute',
+    color: 'red',
+    top: 50,
   },
 })

@@ -1,50 +1,77 @@
-import { Dimensions,ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, Image } from 'react-native';
+import { Dimensions,ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import background from '../assets/images/iosBackground.png';
 import addImage from '../assets/images/add.png';
+import { useState } from 'react';
 
 export default function RegistrationScreen() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [watchPassword, setWatchPassword] = useState({ secureTextEntry: true, buttonText: 'Показати' });
+
+  const onLogin = () => {
+    console.log("Credentials", `name: ${name}; email: ${email}; password: ${password}`);
+  };
+
+  const seePassword = () => {
+    setWatchPassword((prevState) => ({ secureTextEntry: !prevState.secureTextEntry,
+    buttonText: prevState.secureTextEntry ? 'Приховати' : 'Показати' }));
+  }
 
   return (
-    <View style={styles.container}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
         <ImageBackground source={background} style={styles.image}>
-            <KeyboardAvoidingView style={styles.position} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-                <View style={styles.section}>
-                    <TouchableOpacity>
-                        <View style={styles.userImagePosition}>
-                            <Image style={styles.userImage}></Image>
-                            <Image style={styles.addImage} source={addImage} />
-                        </View>
-                    </TouchableOpacity>
-                    <Text style={styles.title}>Реєстрація</Text>
-                    <SafeAreaView>
-                        <TextInput style={styles.input} placeholder='Логін'></TextInput>
-                        <TextInput style={styles.input} placeholder='Адреса електронної пошти'></TextInput>
-                        <TextInput style={styles.inputLast} placeholder='Пароль'></TextInput>
-                        <TouchableOpacity style={styles.password} >
-                            <Text style={styles.checkPassword}>Показати</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.button} >
-                            <Text style={styles.buttonText}>Зареєструватися</Text>
-                        </TouchableOpacity>
-                    </SafeAreaView>
-                    <TouchableOpacity>
-                        <Text style={styles.logIn}>Вже є акаунт? Увійти</Text>
-                    </TouchableOpacity>
+          <KeyboardAvoidingView style={styles.position} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <View style={styles.section}>
+              <TouchableOpacity>
+                <View style={styles.userImagePosition}>
+                  <Image style={styles.userImage}></Image>
+                  <Image style={styles.addImage} source={addImage} />
                 </View>
-            </KeyboardAvoidingView>
+              </TouchableOpacity>
+              <Text style={styles.title}>Реєстрація</Text>
+              <SafeAreaView>
+                <TextInput 
+                  style={styles.input} 
+                  placeholder='Логін'
+                  value={name}
+                  onChangeText={setName}>
+                </TextInput>
+                <TextInput 
+                  style={styles.input} 
+                  placeholder='Адреса електронної пошти'
+                  value={email}
+                  onChangeText={setEmail}>
+                </TextInput>
+                <TextInput 
+                  style={styles.inputLast} 
+                  placeholder='Пароль' 
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={watchPassword.secureTextEntry}>
+                </TextInput>
+                <TouchableOpacity style={styles.password}>
+                  <Text style={styles.checkPassword} onPress={seePassword}>{watchPassword.buttonText}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} >
+                  <Text style={styles.buttonText} onPress={onLogin}>Зареєструватися</Text>
+                </TouchableOpacity>
+              </SafeAreaView>
+              <TouchableOpacity>
+                <Text style={styles.logIn}>Вже є акаунт? Увійти</Text>
+              </TouchableOpacity>
+            </View>
+          </KeyboardAvoidingView>
         </ImageBackground>
-    </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const styles = StyleSheet.create({
-//   safeArea: {
-//     flex: 1,
-//     paddingTop: Platform.OS === 'ios' ? windowWidth * 0.05 : 0,
-//     paddingBottom: Platform.OS === 'ios' ? windowWidth * 0.05 : 0,
-//   },
   container: {
     flex: 1,
     alignItems: 'flex-end',
@@ -100,6 +127,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   input: {
+    borderWidth: 1,
     height: 50,
     marginBottom: 16,
     borderColor: '#E8E8E8',
@@ -115,6 +143,7 @@ const styles = StyleSheet.create({
     color: "#BDBDBD",
   },
   inputLast: {
+    borderWidth: 1,
     height: 50,
     borderColor: '#E8E8E8',
     borderRadius: 8,

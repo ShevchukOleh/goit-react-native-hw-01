@@ -1,32 +1,58 @@
-import { Dimensions,ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform } from 'react-native';
-
+import { Dimensions,ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import background from '../assets/images/iosBackground.png';
+import { useState } from 'react';
 
 export default function LoginScreen() {
-    return (
-        <View style={styles.container}>
-            <ImageBackground source={background} style={styles.image}>
-                <KeyboardAvoidingView style={styles.position} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-                    <View style={styles.section}>
-                        <Text style={styles.title}>Увійти</Text>
-                        <SafeAreaView>
-                            <TextInput style={styles.input} placeholder='Адреса електронної пошти'></TextInput>
-                            <TextInput style={styles.inputLast} placeholder='Пароль'></TextInput>
-                            <TouchableOpacity style={styles.password} >
-                                <Text style={styles.checkPassword}>Показати</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.button} >
-                                <Text style={styles.buttonText}>Увійти</Text>
-                            </TouchableOpacity>
-                        </SafeAreaView>
-                        <TouchableOpacity>
-                            <Text style={styles.logIn}>Немає акаунту? Зареєструватися</Text>
-                        </TouchableOpacity>
-                    </View>
-                </KeyboardAvoidingView>
-            </ImageBackground>
-        </View>
-    )
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [watchPassword, setWatchPassword] = useState({ secureTextEntry: true, buttonText: 'Показати' });
+
+  const onLogin = () => {
+    console.log("Credentials", `email: ${email}; password: ${password}`);
+  };
+
+  const seePassword = () => {
+    setWatchPassword((prevState) => ({ secureTextEntry: !prevState.secureTextEntry,
+    buttonText: prevState.secureTextEntry ? 'Приховати' : 'Показати' }));
+  }
+
+  return (
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
+        <ImageBackground source={background} style={styles.image}>
+          <KeyboardAvoidingView style={styles.position} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <View style={styles.section}>
+              <Text style={styles.title}>Увійти</Text>
+              <SafeAreaView>
+                <TextInput 
+                  style={styles.input} 
+                  placeholder='Адреса електронної пошти'
+                  value={email}
+                  onChangeText={setEmail}>
+                </TextInput>
+                <TextInput 
+                  style={styles.inputLast} 
+                  placeholder='Пароль' 
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={watchPassword.secureTextEntry}>
+                </TextInput>
+                <TouchableOpacity style={styles.password} >
+                  <Text style={styles.checkPassword} onPress={seePassword}>{watchPassword.buttonText}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.button} >
+                  <Text style={styles.buttonText} onPress={onLogin}>Увійти</Text>
+                </TouchableOpacity>
+              </SafeAreaView>
+              <TouchableOpacity>
+                <Text style={styles.logIn}>Немає акаунту? Зареєструватися</Text>
+              </TouchableOpacity>
+            </View>
+          </KeyboardAvoidingView>
+        </ImageBackground>
+      </View>
+    </TouchableWithoutFeedback>
+  )
 }
 const windowWidth = Dimensions.get('window').width;
 

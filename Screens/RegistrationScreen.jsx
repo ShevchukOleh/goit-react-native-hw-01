@@ -2,6 +2,7 @@ import { Dimensions,ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSh
 import background from '../assets/images/iosBackground.png';
 import addImage from '../assets/images/add.png';
 import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 export default function RegistrationScreen() {
   const [name, setName] = useState("");
@@ -11,6 +12,8 @@ export default function RegistrationScreen() {
   const [validationName, setValidationName] = useState("");
   const [validationEmail, setValidationEmail] = useState("");
   const [validationPassword, setValidationPassword] = useState("");
+
+  const navigation = useNavigation();
 
   const validateName = () => {
     setValidationName("");
@@ -111,11 +114,11 @@ export default function RegistrationScreen() {
                 <TouchableOpacity style={styles.password}>
                   <Text style={styles.checkPassword} onPress={seePassword}>{watchPassword.buttonText}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button}>
-                  <Text style={styles.buttonText} onPress={onLogin}>Зареєструватися</Text>
+                <TouchableOpacity style={styles.button} onPress={() => {navigation.reset({index: 0, routes: [{ name: 'Home', params: { screen: 'PostsScreen' } }],});}}>
+                  <Text style={styles.buttonText}>Зареєструватися</Text>
                 </TouchableOpacity>
               </SafeAreaView>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("Login")}>
                 <Text style={styles.logIn}>Вже є акаунт? Увійти</Text>
               </TouchableOpacity>
             </View>

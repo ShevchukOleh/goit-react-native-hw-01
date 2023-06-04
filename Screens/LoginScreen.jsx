@@ -1,6 +1,7 @@
 import { Dimensions,ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import background from '../assets/images/iosBackground.png';
 import { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState("");
@@ -8,19 +9,21 @@ export default function LoginScreen() {
   const [validationEmail, setValidationEmail] = useState("");
   const [validationPassword, setValidationPassword] = useState("");
 
+  const navigation = useNavigation();
+
   const validateEmail = () => {
     setValidationEmail("");
 
-    if (email.trim() === "") {
-      setValidationEmail("Введіть адресу електронної пошти.");
-      return false;
-    }
+    // if (email.trim() === "") {
+    //   setValidationEmail("Введіть адресу електронної пошти.");
+    //   return false;
+    // }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setValidationEmail("Введіть дійсну адресу електронної пошти.");
-      return false;
-    }
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // if (!emailRegex.test(email)) {
+    //   setValidationEmail("Введіть дійсну адресу електронної пошти.");
+    //   return false;
+    // }
 
     return true;
   }
@@ -28,14 +31,14 @@ export default function LoginScreen() {
   const validatePassword = () => {
     setValidationPassword("");
 
-    if (password.trim() === "") {
-      setValidationPassword("Введіть свій пароль.");
-      return false;
-    }
-    if (password.length < 6) {
-      setValidationPassword("Пароль має бути не менше 6 символів.");
-      return false;
-    }
+    // if (password.trim() === "") {
+    //   setValidationPassword("Введіть свій пароль.");
+    //   return false;
+    // }
+    // if (password.length < 6) {
+    //   setValidationPassword("Пароль має бути не менше 6 символів.");
+    //   return false;
+    // }
 
     return true;
   }
@@ -81,11 +84,11 @@ export default function LoginScreen() {
                 <TouchableOpacity style={styles.password} >
                   <Text style={styles.checkPassword} onPress={seePassword}>{watchPassword.buttonText}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} >
-                  <Text style={styles.buttonText} onPress={onLogin}>Увійти</Text>
+                <TouchableOpacity style={styles.button} onPress={() => {navigation.reset({index: 0, routes: [{ name: 'Home', params: { screen: 'PostsScreen' } }],});}}>
+                  <Text style={styles.buttonText}>Увійти</Text>
                 </TouchableOpacity>
               </SafeAreaView>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.navigate("Registration")}>
                 <Text style={styles.logIn}>Немає акаунту? Зареєструватися</Text>
               </TouchableOpacity>
             </View>

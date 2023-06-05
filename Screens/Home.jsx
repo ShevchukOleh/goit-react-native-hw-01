@@ -1,14 +1,16 @@
 import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from 'react-native-vector-icons/Feather';
 import PostsScreen from "./PostsScreen";
 import CreatePostsScreen from "./CreatePostsScreen";
 import ProfileScreen from "./ProfileScreen";
+import { useNavigation } from "@react-navigation/native";
 
 const Tabs = createBottomTabNavigator();
 
 export default function Home() {
+  const navigation = useNavigation();
 
   return (
     <Tabs.Navigator
@@ -46,8 +48,16 @@ export default function Home() {
         },
       }}
     >
-      <Tabs.Screen name="PostsScreen" component={PostsScreen} options={{title: 'Публікації'}}/>
-      <Tabs.Screen name="CreatePostsScreen" component={CreatePostsScreen} options={{title: 'Створити публікацію'}}/>
+      <Tabs.Screen name="PostsScreen" component={PostsScreen} options={{title: 'Публікації', 
+      headerRight: () => (
+        <TouchableOpacity style={{paddingRight: 16}}><Icon name="log-out" color={'#BDBDBD'} size={24}/></TouchableOpacity>
+      ),}}/>
+      <Tabs.Screen name="CreatePostsScreen" component={CreatePostsScreen} options={{title: 'Створити публікацію', 
+      headerLeft: () => (
+        <TouchableOpacity style={{ paddingLeft: 16 }} onPress={() => navigation.goBack()}>
+          <Icon name="arrow-left" color={'#212121CC'} size={24} />
+        </TouchableOpacity>),
+        tabBarStyle: {display: 'none'}}}/>
       <Tabs.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false}}/>
     </Tabs.Navigator>
   );

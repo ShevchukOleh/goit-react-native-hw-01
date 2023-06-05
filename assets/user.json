@@ -1,0 +1,34 @@
+[
+    {
+        "avatar": "https://i.ibb.co/hgWD3bm/user-photo.png",
+        "name": "Natali Romanova",
+        "id": 1812,
+        "posts": [
+            {
+                "id":1,
+                "image": "https://i.ibb.co/p4PPyM6/photo1.png",
+                "title": "Ліс",
+                "likes": "153",
+                "coments": "8",
+                "location": "Ukraine"
+            },
+            {
+                "id":2,
+                "image": "https://i.ibb.co/gwVRV9V/photo2.png",
+                "title": "Ліс",
+                "likes": "200",
+                "coments": "3",
+                "location": "Ukraine"
+            },
+            {
+                "id":3,
+                "image": "https://i.ibb.co/pZtr1Qp/photo3.png",
+                "title": "Ліс",
+                "likes": "200",
+                "coments": "50",
+                "location": "Ukraine"
+            }
+        ]
+    }
+]
+

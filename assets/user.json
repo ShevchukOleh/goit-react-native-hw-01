@@ -15,7 +15,7 @@
             {
                 "id":2,
                 "image": "https://i.ibb.co/gwVRV9V/photo2.png",
-                "title": "Ліс",
+                "title": "Захід на Чорному морі",
                 "likes": "200",
                 "coments": "3",
                 "location": "Ukraine"
@@ -23,7 +23,7 @@
             {
                 "id":3,
                 "image": "https://i.ibb.co/pZtr1Qp/photo3.png",
-                "title": "Ліс",
+                "title": "Старий будиночок у Венеції",
                 "likes": "200",
                 "coments": "50",
                 "location": "Ukraine"

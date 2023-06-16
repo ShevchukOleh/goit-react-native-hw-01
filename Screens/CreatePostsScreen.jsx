@@ -72,12 +72,8 @@ export default function CreatePostsScreen() {
           </TouchableOpacity>
         </View>
         <Text style={styles.text}>Завантажте фото</Text>
-        <TextInput style={styles.input} placeholder="Назва..." value={title}
-            onChangeText={(text) => setTitle(text)}>
-        </TextInput>
-        <TextInput style={styles.input} placeholder="Місцевість..." value={location}
-            onChangeText={(text) => setLocation(text)}>
-        </TextInput>
+        <TextInput style={styles.input} placeholder="Назва..." value={title} onChangeText={(text) => setTitle(text)}></TextInput>
+        <TextInput style={styles.input} placeholder="Місцевість..." value={location} onChangeText={(text) => setLocation(text)}></TextInput>
         <TouchableOpacity style={[styles.button, 
             {backgroundColor: ((photoAdded && title && location) ? '#FF6C00' : '#F6F6F6')}]}
             disabled={!photoAdded || !title || !location}>
@@ -121,7 +117,7 @@ const styles = StyleSheet.create({
       marginBottom: 33,
     },
     input: {
-      color:'#BDBDBD',
+      color:'#0e0d0d',
       fontFamily: 'Roboto-Regular',
       fontSize: 16,
       lineHeight: 19,

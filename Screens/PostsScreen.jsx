@@ -31,7 +31,7 @@ export default function PostsScreen({ route, navigation }) {
               <View style={styles.photoComents}>
                 <TouchableOpacity
                     onPress={() => {
-                        navigation.navigate('Comments');
+                        navigation.navigate('Comments', { photo: item.photo });
                     }}
                 >
                     <Icon name={'message-circle'} size={18} color={'#FF6C00'} />

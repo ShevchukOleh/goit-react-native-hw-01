@@ -106,7 +106,6 @@ const styles = StyleSheet.create({
         overflow: 'scroll',
     },
     postOne: {
-        // backgroundColor: 'grey',
         paddingBottom: 35,
     },
     postImage: {

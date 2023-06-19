@@ -1,5 +1,5 @@
 import React from 'react';
-import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
 export default function CommentsScreen({ route }) {
@@ -19,12 +19,12 @@ export default function CommentsScreen({ route }) {
           </View>
         </View>
       </ScrollView>
-      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={Platform.OS === 'ios' ? 110 : 0}>
+      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={Platform.OS === 'ios' ? 110 : -190}>
         <View style={styles.inputContainer}>
           <TextInput style={styles.input} placeholder="Коментувати..." />
-          <View style={styles.buttonSend}>
+          <TouchableOpacity style={styles.buttonSend}>
             <Icon name={'arrow-up'} size={18} color={'#fff'} />
-          </View>
+          </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
     </View>

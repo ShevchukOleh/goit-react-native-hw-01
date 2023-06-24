@@ -3,64 +3,33 @@ import background from '../assets/images/iosBackground.png';
 import addImage from '../assets/images/add.png';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { SignUp } from '../redux/auth/operations';
+import { useDispatch } from 'react-redux';
+
+const initialState = {
+  email: '',
+  password: '',
+  username: '',
+};
 
 export default function RegistrationScreen() {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [user, setUser] = useState(initialState);
   const [watchPassword, setWatchPassword] = useState({ secureTextEntry: true, buttonText: 'Показати' });
-  const [validationName, setValidationName] = useState("");
-  const [validationEmail, setValidationEmail] = useState("");
-  const [validationPassword, setValidationPassword] = useState("");
-
+  const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const validateName = () => {
-    setValidationName("");
-    
-    if (name.trim() === "") {
-      setValidationName("Введіть своє ім'я.");
-      return false;
-    }
+  const handleFieldChange = (fieldName) => (text) => {
+    setUser((prevState) => ({
+      ...prevState,
+      [fieldName]: text,
+    }));
+  };
 
-    return true;
-  }
-
-  const validateEmail = () => {
-    setValidationEmail("");
-
-    if (email.trim() === "") {
-      setValidationEmail("Введіть адресу електронної пошти.");
-      return false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setValidationEmail("Введіть дійсну адресу електронної пошти.");
-      return false;
-    }
-
-    return true;
-  }
-
-  const validatePassword = () => {
-    setValidationPassword("");
-
-    if (password.trim() === "") {
-      setValidationPassword("Введіть свій пароль.");
-      return false;
-    }
-    if (password.length < 6) {
-      setValidationPassword("Пароль має бути не менше 6 символів.");
-      return false;
-    }
-
-    return true;
-  }
-
-  const onLogin = () => {
-    if (validateName() && validateEmail() && validatePassword()) {
-      console.log("Credentials", `name: ${name}; email: ${email}; password: ${password}`);
+  const handleSignUp = async () => {
+    try {
+      await dispatch(SignUp(user)).unwrap();
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -83,38 +52,37 @@ export default function RegistrationScreen() {
               </TouchableOpacity>
               <Text style={styles.title}>Реєстрація</Text>
               <SafeAreaView>
-                <Text style={styles.errorName}>{validationName}</Text>
                 <TextInput 
                   style={styles.input} 
                   placeholder='Логін'
-                  value={name}
-                  onChangeText={setName}
-                  onBlur={validateName}
+                  value={user.username}
+                  onChangeText={handleFieldChange('username')}
+                  // onBlur={validateName}
                 >
                 </TextInput>
-                <Text style={styles.errorEmail}>{validationEmail}</Text>
+
                 <TextInput 
                   style={styles.input} 
                   placeholder='Адреса електронної пошти'
-                  value={email}
-                  onChangeText={setEmail}
-                  onBlur={validateEmail}
+                  value={user.email}
+                  onChangeText={handleFieldChange('email')}
+                  // onBlur={validateEmail}
                 >
                 </TextInput>
-                <Text style={styles.errorPassword}>{validationPassword}</Text>
+
                 <TextInput 
                   style={styles.inputLast} 
                   placeholder='Пароль' 
-                  value={password}
-                  onChangeText={setPassword}
-                  onBlur={validatePassword}
+                  value={user.password}
+                  onChangeText={handleFieldChange('password')}
+                  // onBlur={validatePassword}
                   secureTextEntry={watchPassword.secureTextEntry}
                 >
                 </TextInput>
                 <TouchableOpacity style={styles.password}>
                   <Text style={styles.checkPassword} onPress={seePassword}>{watchPassword.buttonText}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => {navigation.reset({index: 0, routes: [{ name: 'Home', params: { screen: 'PostsScreen' } }],});}}>
+                <TouchableOpacity style={styles.button} onPress={handleSignUp}>
                   <Text style={styles.buttonText}>Зареєструватися</Text>
                 </TouchableOpacity>
               </SafeAreaView>

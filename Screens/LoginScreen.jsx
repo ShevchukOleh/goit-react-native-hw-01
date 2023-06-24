@@ -2,59 +2,40 @@ import { Dimensions,ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSh
 import background from '../assets/images/iosBackground.png';
 import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { LogIn } from '../redux/auth/operations';
+import { useDispatch } from 'react-redux';
+
+const initialState = {
+  email: '',
+  password: '',
+  login: '',
+};
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [validationEmail, setValidationEmail] = useState("");
-  const [validationPassword, setValidationPassword] = useState("");
-
   const navigation = useNavigation();
-
-  const validateEmail = () => {
-    setValidationEmail("");
-
-    // if (email.trim() === "") {
-    //   setValidationEmail("Введіть адресу електронної пошти.");
-    //   return false;
-    // }
-
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // if (!emailRegex.test(email)) {
-    //   setValidationEmail("Введіть дійсну адресу електронної пошти.");
-    //   return false;
-    // }
-
-    return true;
-  }
-
-  const validatePassword = () => {
-    setValidationPassword("");
-
-    // if (password.trim() === "") {
-    //   setValidationPassword("Введіть свій пароль.");
-    //   return false;
-    // }
-    // if (password.length < 6) {
-    //   setValidationPassword("Пароль має бути не менше 6 символів.");
-    //   return false;
-    // }
-
-    return true;
-  }
-
-  const onLogin = () => {
-    if (validateEmail() && validatePassword()) {
-      console.log("Credentials", `email: ${email}; password: ${password}`);
-    }
-  };
+  const dispatch = useDispatch();
+  const [user, setUser] = useState(initialState);
 
   const [watchPassword, setWatchPassword] = useState({ secureTextEntry: true, buttonText: 'Показати' });
-
   const seePassword = () => {
     setWatchPassword((prevState) => ({ secureTextEntry: !prevState.secureTextEntry,
     buttonText: prevState.secureTextEntry ? 'Приховати' : 'Показати' }));
   }
+
+  const handleChange = (fieldName) => (text) => {
+    setUser((prevState) => ({
+      ...prevState,
+      [fieldName]: text,
+    }));
+  };
+
+  const handleLogIn = async () => {
+    try {
+      await dispatch(LogIn(user)).unwrap();
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -64,27 +45,26 @@ export default function LoginScreen() {
             <View style={styles.section}>
               <Text style={styles.title}>Увійти</Text>
               <SafeAreaView>
-                <Text style={styles.errorEmail}>{validationEmail}</Text>
+
                 <TextInput 
                   style={styles.input} 
                   placeholder='Адреса електронної пошти'
-                  value={email}
-                  onChangeText={setEmail}
-                  onBlur={validateEmail}>
-                </TextInput>
-                <Text style={styles.errorPassword}>{validationPassword}</Text>
+                  value={user.email}
+                  onChangeText={handleChange('email')}
+                ></TextInput>
+
                 <TextInput 
                   style={styles.inputLast} 
                   placeholder='Пароль' 
-                  value={password}
-                  onChangeText={setPassword}
-                  onBlur={validatePassword}
-                  secureTextEntry={watchPassword.secureTextEntry}>
-                </TextInput>
+                  value={user.password}
+                  onChangeText={handleChange('password')}
+                  secureTextEntry={watchPassword.secureTextEntry}
+                ></TextInput>
+
                 <TouchableOpacity style={styles.password} >
                   <Text style={styles.checkPassword} onPress={seePassword}>{watchPassword.buttonText}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button} onPress={() => {navigation.reset({index: 0, routes: [{ name: 'Home', params: { screen: 'PostsScreen' } }],});}}>
+                <TouchableOpacity style={styles.button} onPress={handleLogIn}>
                   <Text style={styles.buttonText}>Увійти</Text>
                 </TouchableOpacity>
               </SafeAreaView>

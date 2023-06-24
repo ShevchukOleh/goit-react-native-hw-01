@@ -57,7 +57,6 @@ export default function RegistrationScreen() {
                   placeholder='Логін'
                   value={user.username}
                   onChangeText={handleFieldChange('username')}
-                  // onBlur={validateName}
                 >
                 </TextInput>
 
@@ -66,7 +65,6 @@ export default function RegistrationScreen() {
                   placeholder='Адреса електронної пошти'
                   value={user.email}
                   onChangeText={handleFieldChange('email')}
-                  // onBlur={validateEmail}
                 >
                 </TextInput>
 
@@ -75,7 +73,6 @@ export default function RegistrationScreen() {
                   placeholder='Пароль' 
                   value={user.password}
                   onChangeText={handleFieldChange('password')}
-                  // onBlur={validatePassword}
                   secureTextEntry={watchPassword.secureTextEntry}
                 >
                 </TextInput>

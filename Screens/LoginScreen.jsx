@@ -8,7 +8,6 @@ import { useDispatch } from 'react-redux';
 const initialState = {
   email: '',
   password: '',
-  login: '',
 };
 
 export default function LoginScreen() {

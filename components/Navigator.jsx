@@ -6,11 +6,14 @@ import PostsScreen from "../Screens/PostsScreen";
 import CreatePostsScreen from "../Screens/CreatePostsScreen";
 import ProfileScreen from "../Screens/ProfileScreen";
 import { useNavigation } from "@react-navigation/native";
+import { LogOut } from "../redux/auth/operations";
+import { useDispatch } from "react-redux";
 
 const Tabs = createBottomTabNavigator();
 
 export default function Navigation() {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   return (
     <Tabs.Navigator
@@ -50,7 +53,9 @@ export default function Navigation() {
     >
       <Tabs.Screen name="PostsScreen" component={PostsScreen} options={{ title: 'Публікації', 
         headerRight: () => (
-          <TouchableOpacity style={{ paddingRight: 16 }}><Icon name="log-out" color={'#BDBDBD'} size={24} /></TouchableOpacity>
+          <TouchableOpacity style={{ paddingRight: 16 }} onPress={() => dispatch(LogOut())}>
+            <Icon name="log-out" color={'#BDBDBD'} size={24} />
+          </TouchableOpacity>
         ),
       }}/>
       <Tabs.Screen name="CreatePostsScreen" component={CreatePostsScreen} options={{ title: 'Створити публікацію', 

@@ -4,6 +4,8 @@ import { Camera, CameraType } from 'expo-camera';
 import { Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import * as FileSystem from 'expo-file-system';
+import { useDispatch } from 'react-redux';
+import { createPost } from '../redux/posts/operations';
 
 export default function CreatePostsScreen({ route, navigation }) {
   const cameraRef= useRef(null);
@@ -12,6 +14,7 @@ export default function CreatePostsScreen({ route, navigation }) {
   const [location, setLocation] = useState(null);
   const [coords, setCoords] = useState(null);
   const [eror, setEror] = useState(null);
+  const dispatch = useDispatch();
   
 
   const takePhoto = async () => {
@@ -62,13 +65,19 @@ export default function CreatePostsScreen({ route, navigation }) {
   }, []);
 
   const handleSubmit = async () => {
-    const existPosts = route.params?.posts ?? [];
-    const newPost = {photo,cords: {...coords}, location, name};;
-    setPhoto(null);
-    setLocation(null)
-    setName(null);
+    try{
+      const newPost = {photo, cords: {...coords}, location, name};
+      
+      await dispatch(createPost(newPost)).unwrap();
+      
+      setPhoto(null);
+      setLocation(null)
+      setName(null);
 
-    navigation.navigate('PostsScreen', {...route.params, posts: [...existPosts, newPost] });
+      navigation.navigate('PostsScreen');
+    } catch (e) {
+      console.error(e)
+    }
   };
 
   if (eror) {

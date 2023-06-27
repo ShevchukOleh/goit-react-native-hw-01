@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { SignUp } from '../redux/auth/operations';
 import { useDispatch } from 'react-redux';
+import * as ImagePicker from 'expo-image-picker';
 
 const initialState = {
   email: '',
@@ -14,10 +15,25 @@ const initialState = {
 
 export default function RegistrationScreen() {
   const [user, setUser] = useState(initialState);
+  const [avatar, setAvatar] = useState(null);
   const [watchPassword, setWatchPassword] = useState({ secureTextEntry: true, buttonText: 'Показати' });
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
+  const avatarSelect = async () => {
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+
+  if (!result.cancelled) {
+    setAvatar(result.uri);
+  }
+};
+
+  
   const handleFieldChange = (fieldName) => (text) => {
     setUser((prevState) => ({
       ...prevState,
@@ -44,9 +60,13 @@ export default function RegistrationScreen() {
         <ImageBackground source={background} style={styles.image}>
           <KeyboardAvoidingView style={styles.position} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
             <View style={styles.section}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={avatarSelect}>
                 <View style={styles.userImagePosition}>
-                  <Image style={styles.userImage}></Image>
+                  {avatar ? (
+                    <Image style={styles.userImage} source={{ uri: avatar }} />
+                  ) : (
+                    <Image style={styles.userImage} />
+                  )}
                   <Image style={styles.addImage} source={addImage} />
                 </View>
               </TouchableOpacity>

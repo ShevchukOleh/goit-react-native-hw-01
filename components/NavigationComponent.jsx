@@ -13,7 +13,7 @@ import Icon from 'react-native-vector-icons/Feather';
 const MainStack = createStackNavigator();
 
 export default function NavigationComponent() {
-  const isLoggedIn = useSelector((state) => state.isLogin);
+  const isLoggedIn = useSelector((state) => state.auth.isLogin);
 
   return (
     <NavigationContainer>

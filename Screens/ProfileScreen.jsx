@@ -1,13 +1,28 @@
-import { Dimensions, Image, ImageBackground, ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Dimensions, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import background from '../assets/images/iosBackground.png';
 import addImage from '../assets/images/add.png';
-import users from '../assets/user.json';
-import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { LogOut } from "../redux/auth/operations";
 import Icon from 'react-native-vector-icons/Feather';
+import { postsList } from "../redux/posts/operations";
 
+export default function ProfileScreen({navigation}) {
+    const dispatch = useDispatch();
+    const [posts, setPosts] = useState([]);
 
-export default function ProfileScreen() {
-    const [userList, setUserList] = useState(users);
+    const loadPosts = async () => {
+    try {
+        const fetchedPosts = await postsList()();
+        setPosts(fetchedPosts);
+    } catch (error) {
+        console.error("Failed to fetch posts:", error);
+    }
+    };
+
+    useEffect(() => {
+        loadPosts();
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -15,34 +30,44 @@ export default function ProfileScreen() {
                 <ImageBackground source={background} style={styles.image}>
                     <View style={{height:180}}></View>
                     <View style={styles.section}>
-                        {userList.map((user) => (
-                            <View key={user.id}>
-                                <View style={styles.userImagePosition}>
-                                    <Image style={styles.userImage} source={{ uri: user.avatar }} />
-                                    {/* <Image style={styles.userImage}/> */}
-                                    <Image style={styles.addImage} source={addImage} />
-                                </View>
-                                <Text style={styles.title}>{user.name}</Text>
-                                <View style={styles.postsAll}>
-                                    {user.posts.map((post) => (
-                                        <View style={styles.postOne} key={post.id}>
-                                            <Image style={styles.postImage} source={{ uri: post.image }} />
-                                            <Text style={styles.photoTitle}>{post.title}</Text>
-                                            <View style={{flexDirection: 'row', gap: 27,}}>
-                                                <View style={{flexDirection: 'row', gap: 8}}>
-                                                    <Icon name={'message-circle'} size={18} color={'#FF6C00'}/>
-                                                    <Text>{post.coments}</Text>
-                                                </View>
-                                                <View style={{flexDirection: 'row', gap: 8}}>
-                                                    <Icon name={'thumbs-up'} size={18} color={'#FF6C00'}/>
-                                                    <Text>{post.likes}</Text>
-                                                </View>
-                                            </View>
-                                        </View>
-                                    ))}
-                                </View>
+                        <View>
+                            <View style={styles.userImagePosition}>
+                                {/* <Image style={styles.userImage} source={{ uri: user.avatar }} /> */}
+                                <Image style={styles.userImage}/>
+                                <Image style={styles.addImage} source={addImage} />
                             </View>
-                        ))}
+                            <Text style={styles.title}>name</Text>
+                            <TouchableOpacity style={styles.logOutButton} onPress={() => dispatch(LogOut())}>
+                                <Icon name="log-out" color={'#BDBDBD'} size={24} />
+                            </TouchableOpacity>
+                            <View style={styles.postsAll}>
+                                {posts.map((item) => (
+                                    <View style={styles.postOne} key={item.id}>
+                                        <Image style={styles.postImage} source={{ uri: item.photo }} />
+                                        <Text style={styles.photoTitle}>{item.name}</Text>
+                                        <View style={{flexDirection: 'row', gap: 27,}}>
+                                            <View style={{flexDirection: 'row', gap: 8}}>
+                                                <Icon name={'message-circle'} size={18} color={'#FF6C00'}/>
+                                                <Text>{item.coments}</Text>
+                                            </View>
+                                            <View style={{flexDirection: 'row', gap: 8}}>
+                                                <Icon name={'thumbs-up'} size={18} color={'#FF6C00'}/>
+                                                <Text>{item.likes}</Text>
+                                            </View>
+                                            <TouchableOpacity
+                                                style={{ flexDirection: 'row', alignItems: 'center' }}
+                                                onPress={() => {
+                                                    navigation.navigate('MapScreen', { cords: item.cords });
+                                                }}
+                                                >
+                                                <Icon name={'map-pin'} size={18} color={'#FF6C00'} />
+                                                <Text>{item.location}</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                ))}
+                            </View>
+                        </View>
                     </View>
                 </ImageBackground>
             </ScrollView>
@@ -120,4 +145,9 @@ const styles = StyleSheet.create({
         marginTop: 8,
         marginBottom: 11,
     },
+    logOutButton: {
+        position: "absolute",
+        right: windowWidth * 0.03,
+        top: windowWidth * -0.2, 
+    }
 })

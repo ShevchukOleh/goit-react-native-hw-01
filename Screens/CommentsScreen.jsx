@@ -1,28 +1,71 @@
-import React from 'react';
-import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import { useDispatch } from 'react-redux';
+import { commentsList, createNewComment } from '../redux/posts/operations';
 
 export default function CommentsScreen({ route }) {
-  const { photo } = route.params;
+  const { id, photo } = route.params;
+  const [comment, setComment] = useState('');
+  const [allComments, setAllComments] = useState([]);
+
+  const dispatch = useDispatch();
+  
+  const fetchComments = async () => {
+    try {
+      const result = await dispatch(commentsList(id)).unwrap();
+      const postComments = result.find(post => post.id === id)
+      setAllComments(postComments.comments);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  useEffect(() => {
+    fetchComments();
+
+    return () => setAllComments([]);
+  }, [id]);
+
+  const handleNewComment = async () => {
+    try {
+      await dispatch(createNewComment({ id, comment })).unwrap();
+      const result = await dispatch(commentsList(id)).unwrap();
+      setAllComments(result.payload);
+      setComment('');
+      fetchComments();
+    } catch (e) {
+      console.error(e);
+    } 
+  };
 
   return (
     <View style={styles.container}>
       <ScrollView>
         <Image source={{ uri: photo }} style={{ width: '100%', height: 240, marginBottom: 8 }} />
         <View style={styles.commentsAll}>
-          <View style={styles.commentContainer}>
-            <Image style={styles.userAvatar} />
-            <View style={styles.comment}>
-              <Text>Thank you! That was very helpful!</Text>
-              <Text style={styles.commentDate}>Date</Text>
-            </View>
-          </View>
+          {allComments && allComments.length > 0 ? (
+            allComments.map((item) => (
+              <View style={styles.commentContainer} key={item.id}>
+                <Image style={styles.userAvatar} source={{ uri: item.photo }} />
+                <View style={styles.comment}>
+                  <Text>{item.comment}</Text>
+                  <Text style={styles.commentDate}>{new Date(item.created_at).toLocaleDateString()}</Text>
+                </View>
+              </View>
+            ))
+          ) : (
+            <Text>No comments available</Text>
+          )}
         </View>
       </ScrollView>
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={Platform.OS === 'ios' ? 110 : -190}>
         <View style={styles.inputContainer}>
-          <TextInput style={styles.input} placeholder="Коментувати..." />
-          <TouchableOpacity style={styles.buttonSend}>
+          <TextInput style={styles.input}
+            placeholder="Коментувати..."
+            value={comment}
+            onChangeText={(value) => setComment(value)}/>
+          <TouchableOpacity style={styles.buttonSend} onPress={handleNewComment}>
             <Icon name={'arrow-up'} size={18} color={'#fff'} />
           </TouchableOpacity>
         </View>

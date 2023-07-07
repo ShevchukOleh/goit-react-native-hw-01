@@ -1,26 +1,45 @@
 import React, { useEffect, useState } from "react";
 import { Dimensions, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import background from '../assets/images/iosBackground.png';
-import addImage from '../assets/images/add.png';
 import { useDispatch } from "react-redux";
 import { LogOut } from "../redux/auth/operations";
 import Icon from 'react-native-vector-icons/Feather';
 import { postsList } from "../redux/posts/operations";
+import background from '../assets/images/iosBackground.png';
+import addImage from '../assets/images/add.png';
+import "firebase/firestore";
+import 'firebase/auth';
+import { auth } from "../config";
+import * as ImagePicker from 'expo-image-picker';
 
-export default function ProfileScreen({navigation}) {
+export default function ProfileScreen({ navigation }) {
     const dispatch = useDispatch();
     const [posts, setPosts] = useState([]);
+    const [avatar, setAvatar] = useState(null);
 
-    const loadPosts = async () => {
-    try {
-        const fetchedPosts = await postsList()();
-        setPosts(fetchedPosts);
-    } catch (error) {
-        console.error("Failed to fetch posts:", error);
-    }
+    const avatarSelect = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [4, 3],
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            const selectedAsset = result.assets[0];
+            setAvatar(selectedAsset.uri);
+        }
     };
 
     useEffect(() => {
+        const loadPosts = async () => {
+            try {
+                const fetchedPosts = await postsList()();
+                setPosts(fetchedPosts);
+            } catch (error) {
+                console.error("Failed to fetch posts:", error);
+            }
+        };
+    
         loadPosts();
     }, []);
 
@@ -31,41 +50,54 @@ export default function ProfileScreen({navigation}) {
                     <View style={{height:180}}></View>
                     <View style={styles.section}>
                         <View>
-                            <View style={styles.userImagePosition}>
-                                {/* <Image style={styles.userImage} source={{ uri: user.avatar }} /> */}
-                                <Image style={styles.userImage}/>
+                            <TouchableOpacity onPress={avatarSelect}>
+                                <View style={styles.userImagePosition}>
+                                {avatar ? (
+                                    <Image style={styles.userImage} source={{ uri: avatar }} />
+                                ) : (
+                                    <Image style={styles.userImage} />
+                                )}
                                 <Image style={styles.addImage} source={addImage} />
-                            </View>
-                            <Text style={styles.title}>name</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <Text style={styles.title}>{auth.currentUser ? auth.currentUser.displayName : 'user'}</Text>
                             <TouchableOpacity style={styles.logOutButton} onPress={() => dispatch(LogOut())}>
                                 <Icon name="log-out" color={'#BDBDBD'} size={24} />
                             </TouchableOpacity>
                             <View style={styles.postsAll}>
-                                {posts.map((item) => (
-                                    <View style={styles.postOne} key={item.id}>
-                                        <Image style={styles.postImage} source={{ uri: item.photo }} />
-                                        <Text style={styles.photoTitle}>{item.name}</Text>
-                                        <View style={{flexDirection: 'row', gap: 27,}}>
-                                            <View style={{flexDirection: 'row', gap: 8}}>
-                                                <Icon name={'message-circle'} size={18} color={'#FF6C00'}/>
-                                                <Text>{item.coments}</Text>
+                                {posts.map((item) => {
+                                    if (item.email === auth.currentUser.email) {
+                                        return (
+                                            <View style={styles.postOne} key={item.id}>
+                                                <Image style={styles.postImage} source={{ uri: item.photo }} />
+                                                <Text style={styles.photoTitle}>{item.name}</Text>
+                                                <View style={{ flexDirection: 'row', gap: 27, }}>
+                                                    <TouchableOpacity onPress={() => {
+                                                        navigation.navigate('Comments', { photo: item.photo, id: item.id });
+                                                    }}>
+                                                        <View style={{ flexDirection: 'row', gap: 2 }}>
+                                                            <Icon name={'message-circle'} size={18} color={'#FF6C00'} />
+                                                            <Text>{item.comments ? item.comments.length : 0}</Text>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                    <View style={{ flexDirection: 'row', gap: 8 }}>
+                                                        <Icon name={'thumbs-up'} size={18} color={'#FF6C00'} />
+                                                        <Text>{item.likes}</Text>
+                                                    </View>
+                                                    <TouchableOpacity
+                                                        style={{ flexDirection: 'row', alignItems: 'center' }}
+                                                        onPress={() => {
+                                                            navigation.navigate('MapScreen', { cords: item.cords });
+                                                        }}
+                                                    >
+                                                        <Icon name={'map-pin'} size={18} color={'#FF6C00'} />
+                                                        <Text>{item.location}</Text>
+                                                    </TouchableOpacity>
+                                                </View>
                                             </View>
-                                            <View style={{flexDirection: 'row', gap: 8}}>
-                                                <Icon name={'thumbs-up'} size={18} color={'#FF6C00'}/>
-                                                <Text>{item.likes}</Text>
-                                            </View>
-                                            <TouchableOpacity
-                                                style={{ flexDirection: 'row', alignItems: 'center' }}
-                                                onPress={() => {
-                                                    navigation.navigate('MapScreen', { cords: item.cords });
-                                                }}
-                                                >
-                                                <Icon name={'map-pin'} size={18} color={'#FF6C00'} />
-                                                <Text>{item.location}</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                ))}
+                                        )
+                                    }
+                                })}
                             </View>
                         </View>
                     </View>

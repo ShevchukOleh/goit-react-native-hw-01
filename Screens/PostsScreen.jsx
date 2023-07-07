@@ -4,8 +4,9 @@ import Icon from 'react-native-vector-icons/Feather';
 import { useDispatch } from 'react-redux';
 import { postsList } from '../redux/posts/operations';
 
-export default function PostsScreen({ route, navigation }) {
+export default function PostsScreen({ navigation }) {
   const [posts, setPosts] = useState([]);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -19,8 +20,16 @@ export default function PostsScreen({ route, navigation }) {
   }, [dispatch]);
 
   const renderItem = ({ item }) => {
+    const Photo = 'https://i.ibb.co/SwS2WHh/blank-profile-picture-973460-1280.webp';
     return (
-      <View>
+        <View style={{paddingBottom: 15}}>
+          <View style={{flexDirection: 'row', marginBottom: 10, alignItems: 'center'}}>
+          <Image style={styles.userPhoto} source={{uri: Photo}}></Image>
+          <View style={{paddingVertical: 15, paddingLeft: 8}}>
+            <Text style={{ marginBottom: 1, fontSize: 13, fontWeight: 'bold'}}>{item.displayName}</Text>
+            <Text style={{fontSize: 11}}>{item.email}</Text>
+          </View>
+        </View>
         <View style={styles.postContainer}>
           <Image source={{ uri: item.photo }} style={{ width: '100%', height: 240, marginBottom: 8}}/>
 
@@ -29,10 +38,14 @@ export default function PostsScreen({ route, navigation }) {
           <View style={styles.photoComents}>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('Comments', { photo: item.photo });
+                navigation.navigate('Comments', { photo: item.photo, id: item.id});
               }}
+              style={{marginRight: 15}}
             >
-              <Icon name={'message-circle'} size={18} color={'#FF6C00'} />
+              <View style={{flexDirection: 'row', gap:2}}>
+                <Icon name={'message-circle'} size={18} color={'#FF6C00'} />
+                <Text>{item.comments ? item.comments.length : 0}</Text>
+              </View>
             </TouchableOpacity>
             <TouchableOpacity
               style={{ flexDirection: 'row', alignItems: 'center' }}
@@ -51,13 +64,7 @@ export default function PostsScreen({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={{flexDirection: 'row', marginBottom: 32}}>
-        <Image style={styles.userPhoto}></Image>
-        <View style={{paddingVertical: 15, paddingLeft: 8}}>
-          <Text style={{marginBottom: 1}}>name</Text>
-          <Text>email</Text>
-        </View>
-      </View>
+      
       <FlatList
         data={posts}
         keyExtractor={(item, index) => index.toString()}

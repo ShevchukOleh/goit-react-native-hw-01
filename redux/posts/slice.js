@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { postList, postsList } from './operations';
+import { postsList } from './operations';
 
 const initialState = {
   posts: [],

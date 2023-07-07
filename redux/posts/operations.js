@@ -1,20 +1,13 @@
-// import { auth, database } from '../../config';
-
-// import { collection, addDoc } from "firebase/firestore";
-
-// import { createAsyncThunk } from '@reduxjs/toolkit';
-// import { child, get, getDatabase, push, ref, set } from 'firebase/database';
-
-import { getFirestore, collection, addDoc, getDocs } from "firebase/firestore";
-import { createAsyncThunk, rejectWithValue, createSlice } from '@reduxjs/toolkit';
+import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, arrayUnion } from "firebase/firestore";
+import { createAsyncThunk } from '@reduxjs/toolkit';
 import { auth, database } from '../../config';
 
 export const createPost = createAsyncThunk(
   'post/createPost',
   async ({ name, cords, photo, location }, { rejectWithValue, getState }) => {
     try {
-      const { email, username } = getState().auth;
-      const newPost = { email, name, cords, photo, location };
+      const { email } = getState().auth;
+      const newPost = { email, name, cords, photo, location, displayName: auth.currentUser.displayName };
 
       const firestore = getFirestore();
 
@@ -52,7 +45,11 @@ export const createNewComment = createAsyncThunk(
         created_at: Date.now(),
       };
 
-      await push(ref(database, 'comments/' + id), newComment);
+      const firestore = getFirestore();
+      const postRef = doc(firestore, 'posts', id);
+      await updateDoc(postRef, {
+        comments: arrayUnion(newComment),
+      });
 
       return;
     } catch (e) {
@@ -61,21 +58,21 @@ export const createNewComment = createAsyncThunk(
   }
 );
 
-export const commentList = createAsyncThunk('post/commentList', async (id, { rejectWithValue }) => {
-  try {
-    const snapshot = await get(child(ref(database), 'comments/' + id));
-    let commentList = [];
+export const commentsList = createAsyncThunk(
+  'post/commentsList',
+  async (id, { rejectWithValue }) => {
+    try {
+      if (!id) {
+        throw new Error('Invalid comment ID');
+      }
 
-    if (snapshot.exists()) {
-      snapshot.forEach((item) => {
-        commentList.push({
-          id: item.key,
-          ...item.val(),
-        });
-      });
+      const firestore = getFirestore();
+      const snapshot = await getDocs(collection(firestore, `posts`));
+      const commentList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+      return commentList;
+    } catch (e) {
+      return rejectWithValue(e?.message);
     }
-    return commentList;
-  } catch (e) {
-    return rejectWithValue(e?.message);
   }
-});
+);

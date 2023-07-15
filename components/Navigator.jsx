@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from 'react-native-vector-icons/Feather';
@@ -8,12 +8,18 @@ import ProfileScreen from "../Screens/ProfileScreen";
 import { useNavigation } from "@react-navigation/native";
 import { LogOut } from "../redux/auth/operations";
 import { useDispatch } from "react-redux";
+import storage from "../storage";
 
 const Tabs = createBottomTabNavigator();
 
 export default function Navigation() {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+
+  const [user, setUser] = useState(null)
+    
+    storage.load({ key: 'loginState' }).then(ret => { return setUser(ret.user) })
+    console.log(user)
 
   return (
     <Tabs.Navigator
@@ -66,7 +72,9 @@ export default function Navigation() {
         ),
         tabBarStyle: { display: 'none' },
       }}/>
-      <Tabs.Screen name="ProfileScreen" component={ProfileScreen} options={{ headerShown: false }}/>
+      <Tabs.Screen name="ProfileScreen" options={{ headerShown: false }}>
+        {() => <ProfileScreen user={user} />}
+      </Tabs.Screen>
     </Tabs.Navigator>
   );
 }

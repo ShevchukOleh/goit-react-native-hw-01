@@ -14,17 +14,17 @@ import { AuthenticationReducer } from './auth/slice';
 import { PostsSliceReducer } from './posts/slice';
 
 const persistConfig = {
-  key: 'auth',
+  key: 'root',
   storage: AsyncStorage,
 };
 
-const reducer = combineReducers({
+const rootReducer = combineReducers({
   auth: persistReducer(persistConfig, AuthenticationReducer),
   posts: PostsSliceReducer
 });
 
 export const store = configureStore({
-  reducer,
+  reducer: rootReducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {

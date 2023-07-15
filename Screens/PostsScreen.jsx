@@ -3,10 +3,17 @@ import { TouchableOpacity, FlatList, Text, View, Image, StyleSheet } from 'react
 import Icon from 'react-native-vector-icons/Feather';
 import { useDispatch } from 'react-redux';
 import { postsList } from '../redux/posts/operations';
+import storage from '../storage';
 
 export default function PostsScreen({ navigation }) {
   const [posts, setPosts] = useState([]);
 
+  // const [user, setUser] = useState(null)
+    
+  //   storage.load({ key: 'loginState' }).then(ret => { return setUser(ret.user) })
+  //   console.log(user)
+
+  
   const dispatch = useDispatch();
 
   useEffect(() => {

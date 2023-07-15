@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { LogIn } from '../redux/auth/operations';
 import { useDispatch } from 'react-redux';
+import { auth } from '../config';
+import storage from '../storage';
+
 
 const initialState = {
   email: '',
@@ -31,6 +34,12 @@ export default function LoginScreen() {
   const handleLogIn = async () => {
     try {
       await dispatch(LogIn(user)).unwrap();
+      storage.save({
+        key: 'loginState',
+        data: {
+          user: auth.currentUser,
+        },
+      });
     } catch (e) {
       console.error(e);
     }

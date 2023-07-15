@@ -8,26 +8,13 @@ import background from '../assets/images/iosBackground.png';
 import addImage from '../assets/images/add.png';
 import "firebase/firestore";
 import 'firebase/auth';
-// import { auth } from "../config";
 import * as ImagePicker from 'expo-image-picker';
-import { persistor, store } from "../redux/store";
 
-export default function ProfileScreen({ navigation }) {
+export default function ProfileScreen({ navigation, user }) {
     const dispatch = useDispatch();
     const [posts, setPosts] = useState([]);
     const [avatar, setAvatar] = useState(null);
-
-
-
-    persistor.persist().then(() => {
-        const state = store.getState();
-  
-        const userData = state.auth;
-  
-        console.log(userData);
-    })
-    
-    
+ 
     const avatarSelect = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -72,13 +59,13 @@ export default function ProfileScreen({ navigation }) {
                                 <Image style={styles.addImage} source={addImage} />
                                 </View>
                             </TouchableOpacity>
-                            <Text style={styles.title}>{auth.currentUser ? auth.currentUser.displayName : 'user'}</Text>
+                            <Text style={styles.title}>{user && user.displayName ? user.displayName : 'user'}</Text>
                             <TouchableOpacity style={styles.logOutButton} onPress={() => dispatch(LogOut())}>
                                 <Icon name="log-out" color={'#BDBDBD'} size={24} />
                             </TouchableOpacity>
                             <View style={styles.postsAll}>
                                 {posts.map((item) => {
-                                    if (item.email === auth.currentUser.email) {
+                                    if (item.email === user.email) {
                                         return (
                                             <View style={styles.postOne} key={item.id}>
                                                 <Image style={styles.postImage} source={{ uri: item.photo }} />

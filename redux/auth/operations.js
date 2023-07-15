@@ -1,6 +1,7 @@
 import { auth } from '../../config';
 import {createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile,} from 'firebase/auth';
 import { createAsyncThunk } from '@reduxjs/toolkit';
+import storage from '../../storage';
 
 export const LogIn = createAsyncThunk(
   'auth/signIn',
@@ -33,6 +34,7 @@ export const SignUp = createAsyncThunk(
 export const LogOut = createAsyncThunk('auth/signOut', async (_, { rejectWithValue }) => {
   try {
     await signOut(auth);
+    storage.remove({key: 'loginState'});
   } catch (e) {
     return rejectWithValue(e?.message);
   }

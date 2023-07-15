@@ -17,7 +17,7 @@ export default function PostsScreen({ navigation }) {
       .catch((error) => {
         console.error('Failed to fetch posts:', error);
       });
-  }, [dispatch]);
+  }, [postsList]);
 
   const renderItem = ({ item }) => {
     const Photo = 'https://i.ibb.co/SwS2WHh/blank-profile-picture-973460-1280.webp';

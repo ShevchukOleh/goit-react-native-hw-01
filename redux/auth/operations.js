@@ -7,7 +7,6 @@ export const LogIn = createAsyncThunk(
   async ({ email, password }, { rejectWithValue }) => {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-
       return { displayName: result._tokenResponse.displayName, email: result._tokenResponse.email };
     } catch (e) {
       return rejectWithValue(e?.message);

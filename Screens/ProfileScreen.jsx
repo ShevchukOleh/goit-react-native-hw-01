@@ -8,14 +8,26 @@ import background from '../assets/images/iosBackground.png';
 import addImage from '../assets/images/add.png';
 import "firebase/firestore";
 import 'firebase/auth';
-import { auth } from "../config";
+// import { auth } from "../config";
 import * as ImagePicker from 'expo-image-picker';
+import { persistor, store } from "../redux/store";
 
 export default function ProfileScreen({ navigation }) {
     const dispatch = useDispatch();
     const [posts, setPosts] = useState([]);
     const [avatar, setAvatar] = useState(null);
 
+
+
+    persistor.persist().then(() => {
+        const state = store.getState();
+  
+        const userData = state.auth;
+  
+        console.log(userData);
+    })
+    
+    
     const avatarSelect = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -41,7 +53,7 @@ export default function ProfileScreen({ navigation }) {
         };
     
         loadPosts();
-    }, []);
+    }, [postsList]);
 
     return (
         <View style={styles.container}>

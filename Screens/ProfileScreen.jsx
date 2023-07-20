@@ -14,7 +14,6 @@ export default function ProfileScreen({ navigation, user }) {
     const dispatch = useDispatch();
     const [posts, setPosts] = useState([]);
     const [avatar, setAvatar] = useState(null);
-
  
     const avatarSelect = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -31,16 +30,13 @@ export default function ProfileScreen({ navigation, user }) {
     };
 
     useEffect(() => {
-        const loadPosts = async () => {
-            try {
-                const fetchedPosts = await postsList()();
-                setPosts(fetchedPosts);
-            } catch (error) {
-                console.error("Failed to fetch posts:", error);
-            }
-        };
-    
-        loadPosts();
+        dispatch(postsList())
+        .then((data) => {
+            setPosts(data.payload);
+        })
+        .catch((error) => {
+            console.error('Failed to fetch posts:', error);
+        });
     }, [postsList]);
 
     return (
@@ -65,21 +61,19 @@ export default function ProfileScreen({ navigation, user }) {
                                 <Icon name="log-out" color={'#BDBDBD'} size={24} />
                             </TouchableOpacity>
                             <View style={styles.postsAll}>
-                                {posts.map((item) => {
-                                    console.log(user)
-                                    
+                                {posts.map((item) => {                                    
                                     if (item.email === user.email) {
                                         return (
                                             <View style={styles.postOne} key={item.id}>
                                                 <Image style={styles.postImage} source={{ uri: item.photo }} />
                                                 <Text style={styles.photoTitle}>{item.name}</Text>
                                                 <View style={{ flexDirection: 'row', gap: 27, }}>
-                                                    <TouchableOpacity onPress={() => {
-                                                        navigation.navigate('Comments', { photo: item.photo, id: item.id });
-                                                    }}>
+                                                    <TouchableOpacity
+                                                        onPress={() => {navigation.navigate('Comments', { photo: item.photo, id: item.id});}}
+                                                    >
                                                         <View style={{ flexDirection: 'row', gap: 2 }}>
                                                             <Icon name={'message-circle'} size={18} color={'#FF6C00'} />
-                                                            <Text>{item.comments ? item.comments.length : 0}</Text>
+                                                            <Text>{item.comments ? Object.keys(item.comments).length : 0}</Text>
                                                         </View>
                                                     </TouchableOpacity>
                                                     <View style={{ flexDirection: 'row', gap: 8 }}>

@@ -8,14 +8,13 @@ export default function CommentsScreen({ route }) {
   const { id, photo } = route.params;
   const [comment, setComment] = useState('');
   const [allComments, setAllComments] = useState([]);
-
+  
   const dispatch = useDispatch();
   
   const fetchComments = async () => {
     try {
       const result = await dispatch(commentsList(id)).unwrap();
-      const postComments = result.find(post => post.id === id)
-      setAllComments(postComments.comments);
+      setAllComments(result);
     } catch (e) {
       console.error(e);
     }
@@ -28,9 +27,16 @@ export default function CommentsScreen({ route }) {
   }, [id]);
 
   const handleNewComment = async () => {
+    const trimmedComment = comment.trim();
+
+    if (!trimmedComment) {
+      return; 
+    }
+
     try {
       await dispatch(createNewComment({ id, comment })).unwrap();
       const result = await dispatch(commentsList(id)).unwrap();
+      // if(result.payload)
       setAllComments(result.payload);
       setComment('');
       fetchComments();
@@ -55,7 +61,7 @@ export default function CommentsScreen({ route }) {
               </View>
             ))
           ) : (
-            <Text>No comments available</Text>
+            <Text>Коментарів немає</Text>
           )}
         </View>
       </ScrollView>

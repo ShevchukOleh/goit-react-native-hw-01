@@ -6,13 +6,13 @@ import { postsList } from '../redux/posts/operations';
 
 export default function PostsScreen({ navigation }) {
   const [posts, setPosts] = useState([]);
-  
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(postsList())
       .then((data) => {
-        setPosts(data);
+        setPosts(data.payload);
       })
       .catch((error) => {
         console.error('Failed to fetch posts:', error);
@@ -44,7 +44,7 @@ export default function PostsScreen({ navigation }) {
             >
               <View style={{flexDirection: 'row', gap:2}}>
                 <Icon name={'message-circle'} size={18} color={'#FF6C00'} />
-                <Text>{item.comments ? item.comments.length : 0}</Text>
+                <Text>{item.comments ? Object.keys(item.comments).length : 0}</Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity

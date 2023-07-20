@@ -18,7 +18,7 @@ export default function Navigation() {
 
   const [user, setUser] = useState(null)
     
-  storage.load({ key: 'loginState' }).then(ret => { return setUser(ret.user) })
+  storage.load({ key: 'loginState' }).then(res => { return setUser(res.user) })
 
   return (
     <Tabs.Navigator

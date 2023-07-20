@@ -1,21 +1,21 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
-import "firebase/firestore";
+import { getDatabase } from 'firebase/database';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAd3lnlOkKSO_m391fUeNq_7a5Fy4KksaM",
-  authDomain: "react-native-project-bc9c7.firebaseapp.com",
-  databaseURL: 'https://react-native-project-bc9c7.firebaseio.com',
-  projectId: "react-native-project-bc9c7",
-  storageBucket: "react-native-project-bc9c7.appspot.com",
-  messagingSenderId: "600912305811",
-  appId: "1:600912305811:web:88aedfa63e532657da7766",
-  measurementId: "G-QWPP328MLS",
+  apiKey: "AIzaSyCPpqrsWmhc9l5IsITOOyTOSYBV5ps3VWA",
+  authDomain: "react-native-577cb.firebaseapp.com",
+  databaseURL: "https://react-native-577cb-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "react-native-577cb",
+  storageBucket: "react-native-577cb.appspot.com",
+  messagingSenderId: "59329769255",
+  appId: "1:59329769255:web:e8e85677f6aff7fd118302"
 };
 
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
 
-export const database = getFirestore(app);
+export const database = getDatabase(app);
+
+

@@ -1,17 +1,15 @@
-import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, arrayUnion } from "firebase/firestore";
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { auth } from '../../config';
+import { auth, database } from '../../config';
+import { child, get, push, ref } from "firebase/database";
 
 export const createPost = createAsyncThunk(
   'post/createPost',
   async ({ name, cords, photo, location }, { rejectWithValue, getState }) => {
     try {
-      const { email } = getState().auth;
-      const newPost = { email, name, cords, photo, location, displayName: auth.currentUser.displayName };
+      const { email, displayName } = auth.currentUser;
+      const newPost = { email, name, cords, photo, location, displayName };
 
-      const firestore = getFirestore();
-
-      const docRef = await addDoc(collection(firestore, 'posts'), newPost);
+      const docRef = await push(ref(database, 'posts'), newPost);
 
       return {};
     } catch (e) {
@@ -20,18 +18,24 @@ export const createPost = createAsyncThunk(
   }
 );
 
-export const postsList = () => {
-  return async () => {
-    try {
-      const firestore = getFirestore();
-      const snapshot = await getDocs(collection(firestore, 'posts'));
-      const postList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      return postList;
-    } catch (e) {
-      throw new Error(e?.message);
+export const postsList = createAsyncThunk('post/postList', async (_, { rejectWithValue }) => {
+  try {
+    const snapshot = await get(child(ref(database), 'posts'));
+    let postList = [];
+
+    if (snapshot.exists()) {
+      snapshot.forEach((item) => {
+        postList.push({
+          id: item.key,
+          ...item.val(),
+        });
+      });
     }
-  };
-};
+    return postList;
+  } catch (e) {
+    throw new Error(e?.message);
+  }
+});
 
 export const createNewComment = createAsyncThunk(
   'post/createNewComment',
@@ -46,11 +50,7 @@ export const createNewComment = createAsyncThunk(
         created_at: Date.now(),
       };
 
-      const firestore = getFirestore();
-      const postRef = doc(firestore, 'posts', id);
-      await updateDoc(postRef, {
-        comments: arrayUnion(newComment),
-      });
+      await push(ref(database, `posts/${id}/comments`), newComment);
 
       return;
     } catch (e) {
@@ -63,14 +63,17 @@ export const commentsList = createAsyncThunk(
   'post/commentsList',
   async (id, { rejectWithValue }) => {
     try {
-      if (!id) {
-        throw new Error('Invalid comment ID');
+      const snapshot = await get(child(ref(database), `posts/${id}/comments/`));
+      let commentList = [];
+
+      if (snapshot.exists()) {
+        snapshot.forEach((item) => {
+          commentList.push({
+            id: item.key,
+            ...item.val(),
+          });
+        });
       }
-
-      const firestore = getFirestore();
-      const snapshot = await getDocs(collection(firestore, `posts`));
-      const commentList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-
       return commentList;
     } catch (e) {
       return rejectWithValue(e?.message);

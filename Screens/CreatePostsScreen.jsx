@@ -18,7 +18,6 @@ export default function CreatePostsScreen({ route, navigation }) {
   const [uId] = useState(auth.lastNotifiedUid)
   const dispatch = useDispatch();
   
-
   const takePhoto = async () => {
     try {
       if (cameraRef.current) {
@@ -115,24 +114,24 @@ export default function CreatePostsScreen({ route, navigation }) {
 
       <View style={{position: 'relative', marginTop: 16}}>
           <TextInput
-              placeholder="Місцевість..."
-              placeholderTextColor="#BDBDBD"
-              paddingLeft={28}
-              onChangeText={setLocation}
-              value={location}
-              style={styles.input}
+            placeholder="Місцевість..."
+            placeholderTextColor="#BDBDBD"
+            paddingLeft={28}
+            onChangeText={setLocation}
+            value={location}
+            style={styles.input}
           />
           <Icon style={styles.mapPinPosition} name="map-pin" color={"#BDBDBD"} size={24} />
       </View>
 
       <TouchableOpacity 
-          activeOpacity={0.7}
-          onPress={handleSubmit}
-          disabled={isDisabledSubmit}
-          $isDisabled={isDisabledSubmit}
-          style={[styles.button,
-            {backgroundColor: photo && name && location ? "#FF6C00" : "#F6F6F6",},
-          ]}
+        activeOpacity={0.7}
+        onPress={handleSubmit}
+        disabled={isDisabledSubmit}
+        $isDisabled={isDisabledSubmit}
+        style={[styles.button,
+          {backgroundColor: photo && name && location ? "#FF6C00" : "#F6F6F6",},
+        ]}
       >
         <Text style={[styles.text, { color: '#fff' }]}>Опублікувати</Text>
       </TouchableOpacity>

@@ -36,7 +36,6 @@ export default function CommentsScreen({ route }) {
     try {
       await dispatch(createNewComment({ id, comment })).unwrap();
       const result = await dispatch(commentsList(id)).unwrap();
-      // if(result.payload)
       setAllComments(result.payload);
       setComment('');
       fetchComments();

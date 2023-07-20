@@ -9,12 +9,16 @@ import addImage from '../assets/images/add.png';
 import "firebase/firestore";
 import 'firebase/auth';
 import * as ImagePicker from 'expo-image-picker';
+import storage from "../storage";
 
-export default function ProfileScreen({ navigation, user }) {
+export default function ProfileScreen({ navigation }) {
     const dispatch = useDispatch();
     const [posts, setPosts] = useState([]);
     const [avatar, setAvatar] = useState(null);
- 
+
+    const [user, setUser] = useState(null)    
+    storage.load({ key: 'loginState' }).then(res => { return setUser(res.user) })
+    
     const avatarSelect = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,

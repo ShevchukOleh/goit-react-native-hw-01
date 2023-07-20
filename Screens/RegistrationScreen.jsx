@@ -1,4 +1,4 @@
-import { Dimensions,ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, Image, TouchableWithoutFeedback, Keyboard, Button } from 'react-native';
+import { Dimensions,ImageBackground, KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View, Platform, Image, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import background from '../assets/images/iosBackground.png';
 import addImage from '../assets/images/add.png';
 import { useState } from 'react';

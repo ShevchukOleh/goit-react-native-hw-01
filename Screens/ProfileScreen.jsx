@@ -14,6 +14,7 @@ export default function ProfileScreen({ navigation, user }) {
     const dispatch = useDispatch();
     const [posts, setPosts] = useState([]);
     const [avatar, setAvatar] = useState(null);
+
  
     const avatarSelect = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -65,6 +66,8 @@ export default function ProfileScreen({ navigation, user }) {
                             </TouchableOpacity>
                             <View style={styles.postsAll}>
                                 {posts.map((item) => {
+                                    console.log(user)
+                                    
                                     if (item.email === user.email) {
                                         return (
                                             <View style={styles.postOne} key={item.id}>

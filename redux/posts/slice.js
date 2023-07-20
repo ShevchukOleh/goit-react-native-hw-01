@@ -8,10 +8,10 @@ const initialState = {
 export const PostsSlice = createSlice({
   name: 'post',
   initialState,
-  extraReducers: {
-    [postsList.fulfilled]: (state, action) => {
+  extraReducers: (builder) => {
+    builder.addCase(postsList, (state, action) => {
       state.posts = action.payload;
-    },
+    });
   },
 });
 

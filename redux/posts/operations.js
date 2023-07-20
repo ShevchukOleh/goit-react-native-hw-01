@@ -1,6 +1,6 @@
 import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, arrayUnion } from "firebase/firestore";
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { auth, database } from '../../config';
+import { auth } from '../../config';
 
 export const createPost = createAsyncThunk(
   'post/createPost',
@@ -23,7 +23,8 @@ export const createPost = createAsyncThunk(
 export const postsList = () => {
   return async () => {
     try {
-      const snapshot = await getDocs(collection(database, 'posts'));
+      const firestore = getFirestore();
+      const snapshot = await getDocs(collection(firestore, 'posts'));
       const postList = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       return postList;
     } catch (e) {

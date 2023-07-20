@@ -6,6 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { SignUp } from '../redux/auth/operations';
 import { useDispatch } from 'react-redux';
 import * as ImagePicker from 'expo-image-picker';
+import storage from '../storage';
+import { auth } from '../config';
 
 const initialState = {
   email: '',
@@ -44,11 +46,17 @@ export default function RegistrationScreen() {
   const handleSignUp = async () => {
     try {
       await dispatch(SignUp(user)).unwrap();
+      storage.save({
+        key: 'loginState',
+        data: {
+          user: auth.currentUser,
+        },
+      });
     } catch (e) {
       console.error(e);
     }
   };
-
+  
   const seePassword = () => {
     setWatchPassword((prevState) => ({ secureTextEntry: !prevState.secureTextEntry,
     buttonText: prevState.secureTextEntry ? 'Приховати' : 'Показати' }));

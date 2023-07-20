@@ -18,15 +18,14 @@ export default function Navigation() {
 
   const [user, setUser] = useState(null)
     
-    storage.load({ key: 'loginState' }).then(ret => { return setUser(ret.user) })
-    console.log(user)
+  storage.load({ key: 'loginState' }).then(ret => { return setUser(ret.user) })
 
   return (
     <Tabs.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          let iconColor = color;
+          let iconColor = focused ? '#fff' : 'grey';;
           let iconBackground = focused ? '#FF6C00' : 'transparent';
 
           if (route.name === 'PostsScreen') {
@@ -39,23 +38,23 @@ export default function Navigation() {
           return (
             <View style={[styles.tabIconContainer, { backgroundColor: iconBackground }]}>
               <Icon name={iconName} size={size} color={iconColor} />
-            </View> 
-          )    
+            </View>
+          )
         },
-      })}
-      tabBarOptions={{
-        activeTintColor: 'white',
-        inactiveTintColor: 'gray',
-        labelStyle: { display: 'none' },
-        style: {
-          backgroundColor: '#fff',
-        },
-        tabStyle: {
+        tabBarShowLabel: false,
+        tabBarItemStyle: {
           height: 83,
           paddingTop: 9,
-          paddingBottom: 34,
+          paddingBottom: 34
         },
-      }}
+        tabBarStyle: [
+          {
+            display: "flex"
+          },
+          null
+        ]
+
+      })}
     >
       <Tabs.Screen name="PostsScreen" component={PostsScreen} options={{ title: 'Публікації', 
         headerRight: () => (
@@ -66,7 +65,7 @@ export default function Navigation() {
       }}/>
       <Tabs.Screen name="CreatePostsScreen" component={CreatePostsScreen} options={{ title: 'Створити публікацію', 
         headerLeft: () => (
-          <TouchableOpacity style={{ paddingLeft: 16 }} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={{ paddingRight: 16 }} onPress={() => navigation.goBack()}>
             <Icon name="arrow-left" color={'#212121CC'} size={24} />
           </TouchableOpacity>
         ),

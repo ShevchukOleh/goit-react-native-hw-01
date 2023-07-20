@@ -7,7 +7,6 @@ import { useDispatch } from 'react-redux';
 import { auth } from '../config';
 import storage from '../storage';
 
-
 const initialState = {
   email: '',
   password: '',

@@ -7,7 +7,7 @@ export const createPost = createAsyncThunk(
   async ({ name, cords, photo, location }, { rejectWithValue, getState }) => {
     try {
       const { email, displayName } = auth.currentUser;
-      const newPost = { email, name, cords, photo, location, displayName };
+      const newPost = { email, name, cords, photo, location, displayName, created_at: Date.now()};
 
       const docRef = await push(ref(database, 'posts'), newPost);
 

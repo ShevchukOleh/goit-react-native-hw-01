@@ -12,7 +12,10 @@ export default function PostsScreen({ navigation, route }) {
   const fetchData = async () => {
     try {
       const data = await dispatch(postsList());
-      setPosts(data.payload);
+
+      const sortedPosts = [...data.payload].sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+      
+      setPosts(sortedPosts);
     } catch (error) {
       console.error('Failed to fetch posts:', error);
     }
@@ -33,8 +36,6 @@ export default function PostsScreen({ navigation, route }) {
   }, [route.params?.refresh]);
 
   const renderItem = ({ item }) => {
-    console.log(item)
-    
     const Photo = 'https://i.ibb.co/SwS2WHh/blank-profile-picture-973460-1280.webp';
     return (
         <View style={{paddingBottom: 15}}>

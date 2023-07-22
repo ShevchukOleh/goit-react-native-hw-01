@@ -33,15 +33,23 @@ export default function ProfileScreen({ navigation }) {
         }
     };
 
-    useEffect(() => {
-        dispatch(postsList())
-        .then((data) => {
+    const fetchData = async () => {
+        try {
+            const data = await dispatch(postsList());
             setPosts(data.payload);
-        })
-        .catch((error) => {
+        } catch (error) {
             console.error('Failed to fetch posts:', error);
-        });
-    }, [postsList]);
+        }
+    };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchData(); 
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
 
     return (
         <View style={styles.container}>

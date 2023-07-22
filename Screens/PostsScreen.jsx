@@ -4,22 +4,37 @@ import Icon from 'react-native-vector-icons/Feather';
 import { useDispatch } from 'react-redux';
 import { postsList } from '../redux/posts/operations';
 
-export default function PostsScreen({ navigation }) {
+export default function PostsScreen({ navigation, route }) {
   const [posts, setPosts] = useState([]);
 
   const dispatch = useDispatch();
+  
+  const fetchData = async () => {
+    try {
+      const data = await dispatch(postsList());
+      setPosts(data.payload);
+    } catch (error) {
+      console.error('Failed to fetch posts:', error);
+    }
+  };
+  
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      fetchData();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
-    dispatch(postsList())
-      .then((data) => {
-        setPosts(data.payload);
-      })
-      .catch((error) => {
-        console.error('Failed to fetch posts:', error);
-      });
-  }, [postsList]);
+    if (route.params?.refresh) {
+      fetchData();
+    }
+  }, [route.params?.refresh]);
 
   const renderItem = ({ item }) => {
+    console.log(item)
+    
     const Photo = 'https://i.ibb.co/SwS2WHh/blank-profile-picture-973460-1280.webp';
     return (
         <View style={{paddingBottom: 15}}>

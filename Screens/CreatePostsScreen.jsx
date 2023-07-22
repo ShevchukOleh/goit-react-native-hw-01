@@ -5,7 +5,7 @@ import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'reac
 import Icon from 'react-native-vector-icons/Feather';
 import * as FileSystem from 'expo-file-system';
 import { useDispatch } from 'react-redux';
-import { createPost } from '../redux/posts/operations';
+import { createPost, postsList } from '../redux/posts/operations';
 import { auth } from '../config';
 
 export default function CreatePostsScreen({ route, navigation }) {
@@ -75,7 +75,8 @@ export default function CreatePostsScreen({ route, navigation }) {
       setLocation(null)
       setName(null);
 
-      navigation.navigate('PostsScreen');
+      navigation.navigate('PostsScreen', { refresh: true });
+      postsList();
     } catch (e) {
       console.error(e)
     }
